@@ -15,7 +15,7 @@ async def tcp_echo_client(message, loop):
     writer.close()
 
 
-message = 'Hello World!'
+message = '{"jsonrpc": "2.0", "method": "status", "params": {"port": 5100}, "id": 1}'
 loop = asyncio.get_event_loop()
 loop.run_until_complete(tcp_echo_client(message, loop))
 loop.close()
