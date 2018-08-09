@@ -3,6 +3,8 @@ from jsonrpc2 import JsonRpc
 import os
 import json
 
+interface = 'eth0'
+
 ports_map = {
     '5100': {'status': 'idle', 'test_number': 0},
     '5200': {'status': 'idle', 'test_number': 0},
@@ -11,9 +13,15 @@ ports_map = {
 }
 
 def start(port, test_number):
-    cmd = "tcdpdump -i wlan0 port {} -vvv -ttt -c 19500 -w wlan_{}_{}.pcap &".format(port, port, test_number)
+    """
+    Start tcpdump to monitoring incoming data and iperf server.
+    :param port: port of traffic generation
+    :param test_number: test round
+    :return: current status
+    """
+    cmd = "tcpdump -i {} port {} -vvv -ttt -c 19500 -w tcpdump_server_{}_{}.pcap &".format(interface, port, port, test_number)
     os.system(cmd)
-    cmd = "iperf -s -u -i 1 -f k -p {} >> iperf_server_{}_{}.txt &".format(port, port, test_number)
+    cmd = "iperf -s -u -i 1 -f k -p {} > iperf_server_{}_{}.txt &".format(port, port, test_number)
     os.system(cmd)
     ports_map[str(port)]['status'] = 'waiting'
     start_test = True
@@ -27,6 +35,11 @@ def start(port, test_number):
     return {'status': ports_map[str(port)]['status']}
 
 def stop(port):
+    """
+    Stop tcpdump and iperf server.
+    :param port: port of traffic generation
+    :return: current status
+    """
     cmd = "ps axf | grep iperf | grep {} | grep -v grep | awk '{print \"kill -9 \" $1}'" % port
     os.system(cmd)
     cmd = "ps axf | grep tcpdump | grep {} | grep -v grep | awk '{print \"kill -9 \" $1}'" % port
@@ -44,6 +57,11 @@ def stop(port):
     return {'status': ports_map[str(port)]['status']}
 
 def status(port):
+    """
+    Check current status
+    :param port: port of traffic generation
+    :return: current status
+    """
     return {'status': ports_map[str(port)]['status']}
 
 rpc = JsonRpc()
@@ -52,8 +70,14 @@ rpc['stop'] = stop
 rpc['status'] = status
 
 
-async def handle_echo(reader, writer):
-    data = await reader.read(100)
+async def receive(reader, writer):
+    """
+    Handle received message from clients
+    :param reader: socket reader component
+    :param writer: socket writer component
+    :return: None
+    """
+    data = await reader.read(500)
     message = data.decode()
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
@@ -68,7 +92,7 @@ async def handle_echo(reader, writer):
     writer.close()
 
 loop = asyncio.get_event_loop()
-coro = asyncio.start_server(handle_echo, '127.0.0.1', 8888, loop=loop)
+coro = asyncio.start_server(receive, '127.0.0.1', 8888, loop=loop)
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
