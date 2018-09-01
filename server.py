@@ -6,22 +6,34 @@ import json
 interface = 'eth0'
 
 ports_map = {
-    '5100': {'status': 'idle', 'test_number': 0},
-    '5200': {'status': 'idle', 'test_number': 0},
-    '5300': {'status': 'idle', 'test_number': 0},
-    '5400': {'status': 'idle', 'test_number': 0}
+    '5100': {'status': 'idle'},
+    '5200': {'status': 'idle'},
+    '5300': {'status': 'idle'},
+    '5400': {'status': 'idle'}
 }
 
-def start(port, test_number):
+roadmap = [
+    {'data_rate': 620, 'repetitions': 30},
+    {'data_rate': 1238, 'repetitions': 30},
+    {'data_rate': 2475, 'repetitions': 30},
+    {'data_rate': 4950, 'repetitions': 30},
+]
+
+global current_repetition
+global current_test_case
+current_repetition = 0
+current_test_case = 0
+
+def start(port):
     """
     Start tcpdump to monitoring incoming data and iperf server.
     :param port: port of traffic generation
-    :param test_number: test round
     :return: current status
     """
-    cmd = "tcpdump -i {} port {} -vvv -ttt -c 19500 -w tcpdump_server_{}_{}.pcap &".format(interface, port, port, test_number)
-    os.system(cmd)
-    cmd = "iperf -s -u -i 1 -f k -p {} > iperf_server_{}_{}.txt &".format(port, port, test_number)
+    global current_repetition
+    global current_test_case
+    data_rate = roadmap[current_test_case]['data_rate']
+    cmd = "bash server_start.sh {} {} {} {}".format("server_{}".format(data_rate), interface, port, current_repetition)
     os.system(cmd)
     ports_map[str(port)]['status'] = 'waiting'
     start_test = True
@@ -32,7 +44,9 @@ def start(port, test_number):
     if start_test:
         for station in ports_map:
             ports_map[station]['status'] = 'run'
-    return {'status': ports_map[str(port)]['status']}
+    return {'test_number': current_repetition,
+            'data_rate' : data_rate,
+            'status': ports_map[str(port)]['status']}
 
 def stop(port):
     """
@@ -40,10 +54,8 @@ def stop(port):
     :param port: port of traffic generation
     :return: current status
     """
-    cmd = "ps axf | grep iperf | grep {} | grep -v grep | awk '{print \"kill -9 \" $1}'" % port
-    os.system(cmd)
-    cmd = "ps axf | grep tcpdump | grep {} | grep -v grep | awk '{print \"kill -9 \" $1}'" % port
-    os.system(cmd)
+    global current_repetition
+    global current_test_case
     ports_map[str(port)]['status'] = 'stopped'
     stop_test = True
     for station in ports_map:
@@ -51,9 +63,16 @@ def stop(port):
             stop_test = False
             break
     if stop_test:
+        cmd = "bash server_stop.sh"
+        os.system(cmd)
         for station in ports_map:
             ports_map[station]['status'] = 'idle'
-            ports_map[station]['test_number'] += 1
+            current_repetition += 1
+            if current_repetition == roadmap[current_test_case]['repetitions']:
+                current_test_case += 1
+                current_repetition = 0
+                if current_test_case == len(roadmap):
+                    raise Exception('Test finished')
     return {'status': ports_map[str(port)]['status']}
 
 def status(port):
