@@ -6,17 +6,59 @@ import json
 interface = 'eth0'
 
 ports_map = {
-    '5100': {'status': 'idle'},
-    '5200': {'status': 'idle'},
-    '5300': {'status': 'idle'},
-    '5400': {'status': 'idle'}
+    '5100': {'status': 'idle', 'type': 'RT'},
+    '5200': {'status': 'idle', 'type': 'RT'},
+    '5300': {'status': 'idle', 'type': 'RT'},
+    '5400': {'status': 'idle', 'type': 'RT'},
+    '5500': {'status': 'idle', 'type': 'NRT'},
+    '5600': {'status': 'idle', 'type': 'NRT'},
 }
 
 roadmap = [
-    {'data_rate': 620, 'repetitions': 30},
-    {'data_rate': 1238, 'repetitions': 30},
-    {'data_rate': 2475, 'repetitions': 30},
-    {'data_rate': 4950, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': 0}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '337k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '675k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '1012k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '1350k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '1687k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '2025k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '2362k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '2700k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '3037k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 1375}, 'NRT': {'data_rate': '3375k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': 0}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '337k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '675k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '1012k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '1350k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '1687k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '2025k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '2362k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '2700k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '3037k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': '3375k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 2750}, 'NRT': {'data_rate': 0}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '337k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '675k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '1012k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '1350k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '1687k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '2025k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '2362k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '2700k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '3037k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 4125}, 'NRT': {'data_rate': '3375k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': 0}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '337k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '675k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '1012k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '1350k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '1687k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '2025k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '2362k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '2700k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '3037k'}, 'repetitions': 30},
+    {'RT': {'data_rate': 5500}, 'NRT': {'data_rate': '3375k'}, 'repetitions': 30}
 ]
 
 global current_repetition
@@ -32,9 +74,11 @@ def start(port):
     """
     global current_repetition
     global current_test_case
-    data_rate = roadmap[current_test_case]['data_rate']
-    cmd = "bash server_start.sh {} {} {} {}".format("server_{}".format(data_rate), interface, port, current_repetition)
-    os.system(cmd)
+    st_type = ports_map[str(port)]['type']
+    data_rate = roadmap[current_test_case][st_type]['data_rate']
+    if st_type == 'RT':
+        cmd = "bash server_start.sh {} {} {} {}".format("server_{}".format(data_rate), interface, port, current_repetition)
+        os.system(cmd)
     ports_map[str(port)]['status'] = 'waiting'
     start_test = True
     for station in ports_map:

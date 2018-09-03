@@ -10,7 +10,7 @@ server_state = 'idle'
 local_state = 'idle'
 test_number = 0
 data_rate = None
-local_port = int(input("Port (5100, 5200, 5300 or 5400): "))
+local_port = int(input("Port (RT: 5100, 5200, 5300 or 5400) (NRT: 5500 or 5600): "))
 interface = 'eth0'
 server_address = '127.0.0.1'
 
@@ -42,8 +42,9 @@ def update_params(message):
 def start_test():
     global test_number
     global data_rate
-    cmd = "bash client.sh {} {} {} {} {} {}".format("result_{}_{}".format(local_port, data_rate), interface, server_address, local_port, data_rate, test_number)
-    os.system(cmd)
+    if str(data_rate) != '0':
+        cmd = "bash client.sh {} {} {} {} {} {}".format("result_{}_{}".format(local_port, data_rate), interface, server_address, local_port, data_rate, test_number)
+        os.system(cmd)
     message = mount_message("stop", port=local_port)
     return message, 'stopped'
 
