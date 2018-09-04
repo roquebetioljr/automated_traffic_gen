@@ -11,9 +11,9 @@ local_state = 'idle'
 test_number = 0
 data_rate = None
 local_port = int(input("Port (RT: 5100, 5200, 5300 or 5400) (NRT: 5500 or 5600): "))
-interface = 'eth0'
-server_address = '127.0.0.1'
-
+interface = 'wlan0'
+app_address = '157.162.57.167'
+iperf_server = '192.168.1.1'
 
 def mount_message(method, **params):
     return json.dumps({
@@ -43,7 +43,13 @@ def start_test():
     global test_number
     global data_rate
     if str(data_rate) != '0':
-        cmd = "bash client.sh {} {} {} {} {} {}".format("result_{}_{}".format(local_port, data_rate), interface, server_address, local_port, data_rate, test_number)
+        cmd = "bash client.sh {} {} {} {} {} {}".format(
+            "result_{}_{}".format(local_port, data_rate),
+            interface,
+            iperf_server,
+            local_port,
+            data_rate,
+            test_number)
         os.system(cmd)
     message = mount_message("stop", port=local_port)
     return message, 'stopped'
@@ -62,7 +68,7 @@ def update_status(message):
 
 
 async def transmmit(message, loop, receive_callback=None):
-    reader, writer = await asyncio.open_connection('127.0.0.1', 8888,
+    reader, writer = await asyncio.open_connection(app_address, 8888,
                                                    loop=loop)
 
     print('Send: %r' % message)
