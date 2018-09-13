@@ -12,7 +12,7 @@ test_number = 0
 data_rate = None
 local_port = int(input("Port (RT: 5100, 5200, 5300 or 5400) (NRT: 5500 or 5600): "))
 interface = 'wlan0'
-app_address = '157.162.57.167'
+app_address = '150.162.57.167'
 iperf_server = '192.168.1.1'
 
 def mount_message(method, **params):

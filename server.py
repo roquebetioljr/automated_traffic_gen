@@ -111,12 +111,12 @@ def stop(port):
         os.system(cmd)
         for station in ports_map:
             ports_map[station]['status'] = 'idle'
-            current_repetition += 1
-            if current_repetition == roadmap[current_test_case]['repetitions']:
-                current_test_case += 1
-                current_repetition = 0
-                if current_test_case == len(roadmap):
-                    raise Exception('Test finished')
+        current_repetition += 1
+        if current_repetition == roadmap[current_test_case]['repetitions']:
+            current_test_case += 1
+            current_repetition = 0
+            if current_test_case == len(roadmap):
+                raise Exception('Test finished')
     return {'status': ports_map[str(port)]['status']}
 
 def status(port):
