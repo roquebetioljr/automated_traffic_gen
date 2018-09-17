@@ -7,6 +7,7 @@ global server_state
 global test_number
 global data_rate
 global test_case
+global server_time
 server_state = 'idle'
 local_state = 'idle'
 test_number = 0
@@ -47,14 +48,18 @@ def start_test():
     global test_number
     global data_rate
     global test_case
-    if str(data_rate) != '0':
-        cmd = "bash client.sh {} {} {} {} {} {}".format(
+    global server_time
+    if str(data_rate) == '0':
+        time.sleep(10)
+    else:
+        cmd = "bash client.sh {} {} {} {} {} {} {}".format(
             "result_{}_{}_{}".format(local_port, data_rate, test_case),
             interface,
             iperf_server,
             local_port,
             data_rate,
-            test_number)
+            test_number,
+            server_time)
         os.system(cmd)
     message = mount_message("stop", port=local_port)
     return message, 'stopped'

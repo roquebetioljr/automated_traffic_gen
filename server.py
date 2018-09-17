@@ -2,6 +2,7 @@ import asyncio
 from jsonrpc2 import JsonRpc
 import os
 import json
+import time
 
 interface = 'wlan0'
 
@@ -93,7 +94,8 @@ def start(port):
     return {'test_number': current_repetition,
             'data_rate' : data_rate,
             'status': ports_map[str(port)]['status'],
-            'test_case': current_test_case}
+            'test_case': current_test_case,
+            'server_time': (time.time() * 1000000)}
 
 def stop(port):
     """
