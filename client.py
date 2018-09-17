@@ -6,9 +6,11 @@ import time
 global server_state
 global test_number
 global data_rate
+global test_case
 server_state = 'idle'
 local_state = 'idle'
 test_number = 0
+test_case = 0
 data_rate = None
 local_port = int(input("Port (RT: 5100, 5200, 5300 or 5400) (NRT: 5500 or 5600): "))
 interface = 'wlan0'
@@ -29,22 +31,25 @@ def ready_to_start():
 
 
 def update_params(message):
-    # example: '{"jsonrpc": "2.0", "id": 1, "result": {"test_number": 1, "data_rate": "1500", "status": "waiting"}}'
+    # example: '{"jsonrpc": "2.0", "id": 1, "result": {"test_number": 1, "data_rate": "1500", "status": "waiting", "test_case": 1}}'
     message = json.loads(message)
     global test_number
     global data_rate
     global server_state
+    global test_case
     test_number = message['result']['test_number']
     data_rate = message['result']['data_rate']
     server_state = message['result']['status']
+    test_case = message['result']['test_case']
 
 
 def start_test():
     global test_number
     global data_rate
+    global test_case
     if str(data_rate) != '0':
         cmd = "bash client.sh {} {} {} {} {} {}".format(
-            "result_{}_{}".format(local_port, data_rate),
+            "result_{}_{}_{}".format(local_port, data_rate, test_case),
             interface,
             iperf_server,
             local_port,

@@ -3,7 +3,7 @@ from jsonrpc2 import JsonRpc
 import os
 import json
 
-interface = 'eth0'
+interface = 'wlan0'
 
 ports_map = {
     '5100': {'status': 'idle', 'type': 'RT'},
@@ -79,7 +79,7 @@ def start(port):
     st_type = ports_map[str(port)]['type']
     data_rate = roadmap[current_test_case][st_type]['data_rate']
     if st_type == 'RT':
-        cmd = "bash server_start.sh {} {} {} {}".format("server_{}".format(data_rate), interface, port, current_repetition)
+        cmd = "bash server_start.sh {} {} {} {}".format("server_{}_{}".format(data_rate, current_test_case), interface, port, current_repetition)
         os.system(cmd)
     ports_map[str(port)]['status'] = 'waiting'
     start_test = True
@@ -92,7 +92,8 @@ def start(port):
             ports_map[station]['status'] = 'run'
     return {'test_number': current_repetition,
             'data_rate' : data_rate,
-            'status': ports_map[str(port)]['status']}
+            'status': ports_map[str(port)]['status'],
+            'test_case': current_test_case}
 
 def stop(port):
     """
@@ -157,7 +158,7 @@ async def receive(reader, writer):
     writer.close()
 
 loop = asyncio.get_event_loop()
-coro = asyncio.start_server(receive, '127.0.0.1', 8888, loop=loop)
+coro = asyncio.start_server(receive, '0.0.0.0', 8888, loop=loop)
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
