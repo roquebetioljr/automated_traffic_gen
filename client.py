@@ -7,12 +7,13 @@ global server_state
 global test_number
 global data_rate
 global test_case
-global server_time
+global diff_time
 server_state = 'idle'
 local_state = 'idle'
 test_number = 0
 test_case = 0
 data_rate = None
+diff_time = 0
 local_port = int(input("Port (RT: 5100, 5200, 5300 or 5400) (NRT: 5500 or 5600): "))
 interface = 'wlan0'
 app_address = '150.162.57.167'
@@ -38,17 +39,20 @@ def update_params(message):
     global data_rate
     global server_state
     global test_case
+    global diff_time
     test_number = message['result']['test_number']
     data_rate = message['result']['data_rate']
     server_state = message['result']['status']
     test_case = message['result']['test_case']
+    server_time = message['result']['server_time']
+    diff_time = server_time - (time.time() * 1000000)
 
 
 def start_test():
     global test_number
     global data_rate
     global test_case
-    global server_time
+    global diff_time
     if str(data_rate) == '0':
         time.sleep(10)
     else:
@@ -59,7 +63,7 @@ def start_test():
             local_port,
             data_rate,
             test_number,
-            server_time)
+            diff_time)
         os.system(cmd)
     message = mount_message("stop", port=local_port)
     return message, 'stopped'

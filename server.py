@@ -80,7 +80,7 @@ def start(port):
     st_type = ports_map[str(port)]['type']
     data_rate = roadmap[current_test_case][st_type]['data_rate']
     if st_type == 'RT':
-        cmd = "bash server_start.sh {} {} {} {}".format("server_{}_{}".format(data_rate, current_test_case), interface, port, current_repetition)
+        cmd = "bash server_start.sh {} {} {} {}".format("server_{}_{}_{}".format(port, data_rate, current_test_case), interface, port, current_repetition)
         os.system(cmd)
     ports_map[str(port)]['status'] = 'waiting'
     start_test = True
