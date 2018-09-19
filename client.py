@@ -45,7 +45,7 @@ def update_params(message):
     server_state = message['result']['status']
     test_case = message['result']['test_case']
     server_time = message['result']['server_time']
-    diff_time = server_time - (time.time() * 1000000)
+    diff_time = server_time - time.time()
 
 
 def start_test():

@@ -95,7 +95,7 @@ def start(port):
             'data_rate' : data_rate,
             'status': ports_map[str(port)]['status'],
             'test_case': current_test_case,
-            'server_time': (time.time() * 1000000)}
+            'server_time': time.time()}
 
 def stop(port):
     """
